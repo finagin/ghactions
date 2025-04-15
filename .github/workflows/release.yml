@@ -13,6 +13,8 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,7 +29,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
@@ -53,9 +55,23 @@ jobs:
 
       - name: Build and push
         id: push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ github.repository }}:buildcache
+          cache-to: type=registry,ref=${{ github.repository }}:buildcache,mode=max
+
+      - name: Notify
+        id: notify
+        run: |
+          curl -s -X POST \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "chat_id": ${{ secrets.TELEGRAM_CHAT_ID }},
+              "text": "Docker images for ${{ github.repository }} have been built and pushed successfully.",
+            }' \
+            https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage
+        shell: bash
