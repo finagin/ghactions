@@ -61,6 +61,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ github.repository }}:buildcache
+          cache-to: type=registry,ref=${{ github.repository }}:buildcache,mode=max
 
       - name: Notify
         id: notify
@@ -69,7 +71,7 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "chat_id": ${{ secrets.TELEGRAM_CHAT_ID }},
-              "text": "${{ steps.push.outputs.digest }}"
+              "text": "Tags pushed: ${{ steps.push.outputs.tags }}\n\nLabels: ${{ steps.push.outputs.labels }}\n\nDocker Image: ${{ steps.meta.outputs.images }}"
             }' \
             https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage
         shell: bash
