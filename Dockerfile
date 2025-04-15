@@ -7,7 +7,7 @@ FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS front
 
 WORKDIR /app
 
-RUN echo "alert(123)" > public/index.js
+RUN mkdir -p public && echo "alert(123)" > public/index.js
 
 
 FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS base
