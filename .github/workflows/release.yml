@@ -71,7 +71,7 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "chat_id": ${{ secrets.TELEGRAM_CHAT_ID }},
-              "text": "Tags pushed: ${{ steps.meta.outputs.tags }}\n\nLabels: ${{ steps.meta.outputs.labels }}\n\nDocker Image: ${{ steps.meta.outputs.description }}"
+              "text": "Docker images for ${{ github.repository }} have been built and pushed successfully.",
             }' \
             https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage
         shell: bash
