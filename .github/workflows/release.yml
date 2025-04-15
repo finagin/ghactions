@@ -59,3 +59,9 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Notify
+        id: notify
+        run: |
+          echo "Image digest: ${{ steps.push.outputs.digest }}"
+        shell: bash
