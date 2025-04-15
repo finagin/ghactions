@@ -72,6 +72,7 @@ jobs:
             -d '{
               "chat_id": ${{ secrets.TELEGRAM_CHAT_ID }},
               "text": "Docker image `${{ github.repository }}:${{ steps.meta.outputs.version }}` have been built and pushed successfully.",
+                "parse_mode": "MarkdownV2"
             }' \
             https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage
         shell: bash
