@@ -11,7 +11,7 @@ on:
       - "develop"
 
 jobs:
-  docker:
+  docker-build-and-push:
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -71,7 +71,8 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{
               "chat_id": ${{ secrets.TELEGRAM_CHAT_ID }},
-              "text": "Docker images for ${{ github.repository }} have been built and pushed successfully.",
+              "text": "Docker image `${{ github.repository }}:${{ steps.meta.outputs.version }}` have been built and pushed successfully\\.",
+              "parse_mode": "MarkdownV2"
             }' \
             https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage
         shell: bash
