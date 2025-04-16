@@ -71,10 +71,9 @@ jobs:
         if: ${{ steps.meta.outputs.version }}
         continue-on-error: true
         env:
-          JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/${{ github.job }}
           MESSAGE: |
             Docker image `${{ github.repository }}:${{ steps.meta.outputs.version }}` 
-            have been [built](${{ env.JOB_URL }}) and [pushed](${{ env.JOB_URL }}) successfully\\.
+            have been built and pushed successfully\\.
         shell: bash
         run: |
           curl -s -X POST \
@@ -82,6 +81,11 @@ jobs:
             -d '{
               "chat_id": ${{ secrets.TELEGRAM_CHAT_ID }},
               "text": "${{ env.MESSAGE }}",
-              "parse_mode": "MarkdownV2"
+              "parse_mode": "MarkdownV2",
+              "protect_content": true,
+              "reply_markup": {"inline_keyboard": [[{
+                "text": "Details",
+                "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/${{ github.job }}"
+              }]]}
             }' \
-            https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage
+            https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage > /dev/null
