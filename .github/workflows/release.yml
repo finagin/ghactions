@@ -64,10 +64,11 @@ jobs:
           cache-to: type=registry,ref=${{ github.repository }}:buildcache,mode=max
 
       - name: Notify
-        if: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        if: ${{ env.TELEGRAM_BOT_TOKEN != '' }}
         id: notify
         env:
           JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         run: |
           curl -s -X POST \
             -H 'Content-Type: application/json' \
