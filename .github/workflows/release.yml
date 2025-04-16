@@ -6,7 +6,7 @@ on:
     branches: [ "develop" ]
   pull_request:
     branches: [ "develop" ]
-  schedule: [ { cron: '40 * * * *' } ]
+  schedule: [ { cron: '45 * * * *' } ]
 
 jobs:
   docker-build-and-push:
@@ -40,7 +40,7 @@ jobs:
             ${{ github.repository }}
             ghcr.io/${{ github.repository }}
           tags: |
-            type=schedule,pattern=nightly
+            type=schedule,value=nightly
             type=ref,event=branch
             type=ref,event=pr,enable=${{ env.DOCKER_PUBLISH_PR == 'true' }}
             type=semver,pattern={{version}}
