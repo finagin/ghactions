@@ -6,7 +6,7 @@ on:
     branches: [ "develop" ]
   pull_request:
     branches: [ "develop" ]
-  schedule: [ { cron: '45 * * * *' } ]
+  schedule: [ { cron: "0 * * * *" } ]
 
 jobs:
   docker-build-and-push:
@@ -41,7 +41,7 @@ jobs:
             ghcr.io/${{ github.repository }}
           tags: |
             type=schedule,value=nightly
-            type=ref,event=branch
+            type=ref,event=branch,enable=${{ github.event_name != 'schedule' }}
             type=ref,event=pr,enable=${{ env.DOCKER_PUBLISH_PR == 'true' }}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -83,7 +83,7 @@ jobs:
               "text": "${{ env.MESSAGE }}",
               "parse_mode": "MarkdownV2",
               "protect_content": true,
-              "disable_notification: ${{ github.event_name == 'schedule' || env.SILENT == 'true' }}",
+              "disable_notification": ${{ github.event_name == 'schedule' || env.SILENT == 'true' }}",
               "reply_markup": {"inline_keyboard": [[{
                 "text": "Details",
                 "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/${{ github.job }}"
