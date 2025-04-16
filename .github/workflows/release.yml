@@ -1,4 +1,4 @@
-name: 🐳 Build and Publish Docker Image
+name: 🐳 Build and Publish Docker Image!
 
 on:
   push:
@@ -15,7 +15,7 @@ jobs:
     permissions:
       packages: write
     steps:
-      - name: Checkout
+      - name: 📥 Checkout
         uses: actions/checkout@v4
 
       - name: 🔐 Log in to the Docker Hub Registry
@@ -31,7 +31,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
+      - name: 🧬 Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
         env:
@@ -49,13 +49,13 @@ jobs:
             type=semver,pattern={{major}},enable=${{ !startsWith(github.ref, 'refs/tags/0.') }}
             type=sha,enable=${{ github.event_name != 'pull_request' }}
 
-      - name: Set up QEMU
+      - name: ⚙️ Set up QEMU
         uses: docker/setup-qemu-action@v3
 
-      - name: Set up Docker Buildx
+      - name: ⚙️ Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push
+      - name: 🏗️ Build and push
         id: push
         if: ${{ steps.meta.outputs.version }}
         uses: docker/build-push-action@v6
