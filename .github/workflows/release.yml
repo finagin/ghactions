@@ -33,6 +33,8 @@ jobs:
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
+        env:
+          DOCKER_PUBLISH_PR: ${{ vars.DOCKER_PUBLISH_PR }}
         with:
           images: |
             ${{ github.repository }}
@@ -40,7 +42,7 @@ jobs:
           tags: |
             type=schedule,pattern=nightly
             type=ref,event=branch
-            type=ref,event=pr,enable=${{ vars.DOCKER_PUBLISH_PR }}
+            type=ref,event=pr,enable=${{ env.DOCKER_PUBLISH_PR == 'true' }}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}},enable=${{ !startsWith(github.ref, 'refs/tags/0.') }}
