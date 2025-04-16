@@ -83,6 +83,7 @@ jobs:
               "text": "${{ env.MESSAGE }}",
               "parse_mode": "MarkdownV2",
               "protect_content": true,
+              "disable_notification: ${{ github.event_name == 'schedule' || env.SILENT == 'true' }}",
               "reply_markup": {"inline_keyboard": [[{
                 "text": "Details",
                 "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/${{ github.job }}"
