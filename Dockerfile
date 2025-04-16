@@ -11,6 +11,8 @@ RUN mkdir -p public && echo "alert(123)" > public/index.js
 
 
 FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS base
+LABEL org.opencontainers.image.vendor="finagin"
+LABEL org.opencontainers.image.authors="Igor Finagin <Igor@Finag.in>"
 
 ENV XDEBUG_MODE=off
 ENV APP_ENV=production
