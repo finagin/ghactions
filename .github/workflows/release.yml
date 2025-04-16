@@ -2,13 +2,11 @@ name: Build and Publish Docker Image
 
 on:
   push:
-    tags:
-      - "*"
-    branches:
-      - "develop"
+    tags: [ "*" ]
+    branches: [ "develop" ]
   pull_request:
-    branches:
-      - "develop"
+    branches: [ "develop" ]
+  schedule: [ { cron: '0 0 * * *' } ]
 
 jobs:
   docker-build-and-push:
@@ -40,8 +38,9 @@ jobs:
             ${{ github.repository }}
             ghcr.io/${{ github.repository }}
           tags: |
+            type=schedule,pattern=nightly
             type=ref,event=branch
-            type=ref,event=pr
+            type=ref,event=pr,enable=${{ vars.DOCKER_PUBLISH_PR }}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}},enable=${{ !startsWith(github.ref, 'refs/tags/0.') }}
@@ -65,13 +64,16 @@ jobs:
           cache-to: type=registry,ref=${{ github.repository }}:buildcache,mode=max
 
       - name: Notify
+        if: ${{ secrets.TELEGRAM_BOT_TOKEN != '' }}
         id: notify
+        env:
+          JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           curl -s -X POST \
             -H 'Content-Type: application/json' \
             -d '{
               "chat_id": ${{ secrets.TELEGRAM_CHAT_ID }},
-              "text": "Docker image `${{ github.repository }}:${{ steps.meta.outputs.version }}` have been built and pushed successfully\\.",
+              "text": "Docker image `${{ github.repository }}:${{ steps.meta.outputs.version }}` have been [built](${{ env.JOB_URL }}) and [pushed](${{ env.JOB_URL }}) successfully\\.",
               "parse_mode": "MarkdownV2"
             }' \
             https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage
