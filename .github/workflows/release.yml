@@ -6,7 +6,7 @@ on:
     branches: [ "develop" ]
   pull_request:
     branches: [ "develop" ]
-  schedule: [ { cron: '30 * * * *' } ]
+  schedule: [ { cron: '40 * * * *' } ]
 
 jobs:
   docker-build-and-push:
